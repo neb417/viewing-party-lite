@@ -19,10 +19,10 @@ class UsersController < ApplicationController
 
   def login_user
     user = User.find_by_email(params[:email])
-    if user && user.authenticate(params[:password])
+    if user&.authenticate(params[:password])
       # give_token
       flash[:success] = "Welcome #{user.name}"
-      redirect_to user_dashboard_path(user.id)
+      redirect_to user_dashboard_path(user)
     else
       flash[:alert] = 'User name and/or password is incorrect'
       redirect_to login_path
