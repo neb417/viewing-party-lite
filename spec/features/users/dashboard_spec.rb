@@ -7,8 +7,14 @@ RSpec.describe 'the user dashboard' do
   let!(:user3) { users.third }
   let!(:user4) { users.last }
 
-  describe 'dashboard stuff' do
+  it 'visit dashboard without sigining in' do
+    visit dashboard_path
+    expect(current_path).to eq(login_path)
+    expect(page).to have_content('You must be a registered user to access this page')
+    expect(page).to have_button('Login')
+  end
 
+  describe 'dashboard stuff' do
     before :each do
       visit login_path
 

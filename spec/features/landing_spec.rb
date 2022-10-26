@@ -22,7 +22,16 @@ RSpec.describe 'Landing Page' do
       expect(current_path).to eq(register_path)
     end
 
-    it 'has section for existing users' do
+    it 'has section for existing users when logged in' do
+      expect(page).to_not have_content('Existing Users')
+      click_on 'Login'
+
+      fill_in 'Enter Email', with: user1.email
+      fill_in 'Enter Password', with: user1.password
+
+      click_on 'Login'
+      click_on 'Home'
+
       expect(page).to have_content('Existing Users')
 
       within("#existing_users") do

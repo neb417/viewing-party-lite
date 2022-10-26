@@ -2,6 +2,17 @@
   <div id='button'>
     <%= button_to 'Log Out', root_path, method: :delete%>
   </div>
+  <br>
+  <section id='existing_users'>
+    <h2>Existing Users</h2>
+    <% @users.each do |user| %>
+      <div id='user-<%= user.id %>'>
+        <p>
+          <%= "#{user.email}" %>
+        </p>
+      </div>
+    <% end %>
+  </section>
 <% else %>
   <div id='button'>
     <%= button_to 'Create New User', register_path, method: :get %>
@@ -13,15 +24,3 @@
   </div>
 <% end %>
 
-<br>
-
-<section id='existing_users'>
-  <h2>Existing Users</h2>
-  <% @users.each do |user| %>
-    <div id='user-<%= user.id %>'>
-      <p>
-        <%= "#{user.email}" %>
-      </p>
-    </div>
-  <% end %>
-</section>

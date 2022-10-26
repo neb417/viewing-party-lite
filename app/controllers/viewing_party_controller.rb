@@ -1,8 +1,12 @@
 class ViewingPartyController < ApplicationController
   def new
-    @host = User.find(session[:user_id])
-    @movie = MovieFacade.details(params[:movie_id])
-    @invitees = User.where.not(id: params[:user_id])
+    if session[:user_id].nil?
+      require_user
+    else
+      @host = User.find(session[:user_id])
+      @movie = MovieFacade.details(params[:movie_id])
+      @invitees = User.where.not(id: params[:user_id])
+    end
   end
 
   def create

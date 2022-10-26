@@ -9,7 +9,14 @@ class MoviesController < ApplicationController
   end
 
   def show
-    @movie = MovieFacade.details(params[:id])
-    @user = User.find(session[:user_id])
+    if session[:user_id].nil?
+      @movie = MovieFacade.details(params[:id])
+      # flash[:error] = 'You must be logged in to create a party'
+      # redirect_to root_path
+    else
+      @movie = MovieFacade.details(params[:id])
+      @user = User.find(session[:user_id])
+    end
   end
 end
+
