@@ -1,6 +1,6 @@
 <img src="https://image.tmdb.org/t/p/w200<%= party.poster_path %>">
 <br/>
-<%= link_to party.movie_title, user_movie_path(@user, party.movie_id ) %>
+<%= link_to party.movie_title, movie_path(party.movie_id ) %>
 <br/>
 <%= party.date.strftime('%B %e, %Y') %>
 <br/>

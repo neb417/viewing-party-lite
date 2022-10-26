@@ -27,13 +27,13 @@ RSpec.describe 'Landing Page' do
 
       within("#existing_users") do
         within("#user-#{user1.id}") do
-          expect(page).to have_link("#{user1.email}'s Dashboard")
+          expect(page).to have_content("#{user1.email}")
         end
         within("#user-#{users.second.id}") do
-          expect(page).to have_link("#{users.second.email}'s Dashboard")
+          expect(page).to have_content("#{users.second.email}")
         end
         within("#user-#{users.third.id}") do
-          expect(page).to have_link("#{users.third.email}'s Dashboard")
+          expect(page).to have_content("#{users.third.email}")
         end
       end
     end

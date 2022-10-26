@@ -14,6 +14,6 @@ class ViewingParty < ApplicationRecord
 
   def attendees
     # self.users.select(:name).where.not(id: host.id).pluck(:name).to_sentence
-    self.users.select(:name).where.not(id: host.id).pluck(:name)
+    users.select(:name).where.not(id: host.id).pluck(:name)
   end
 end

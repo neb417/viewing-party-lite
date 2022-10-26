@@ -8,16 +8,28 @@ RSpec.describe 'Create Viewing Party' do
   let!(:user4) { users.last }
 
   it 'links from user movie show page', :vcr do
-    visit user_movie_path(user1, 238)
+    visit login_path
+
+    fill_in 'Enter Email', with: user1.email
+    fill_in 'Enter Password', with: user1.password
+    click_on 'Login'
+
+    visit movie_path(238)
 
     click_on ('Create Viewing Party for The Godfather')
 
-    expect(current_path).to eq(user_movie_viewing_party_new_path(user1, 238))
+    expect(current_path).to eq(movie_viewing_party_new_path(238))
   end
 
   describe 'page tests', :vcr do
     before :each do
-      visit user_movie_viewing_party_new_path(user1, 238)
+      visit login_path
+
+      fill_in 'Enter Email', with: user1.email
+      fill_in 'Enter Password', with: user1.password
+      click_on 'Login'
+
+      visit movie_viewing_party_new_path(238)
     end
 
     it 'has a header' do
@@ -29,7 +41,7 @@ RSpec.describe 'Create Viewing Party' do
 
       click_on 'Discover Page'
 
-      expect(current_path).to eq(user_discover_path(user1))
+      expect(current_path).to eq(discover_path)
     end
 
     it 'has a field for entering party deets' do
@@ -60,7 +72,7 @@ RSpec.describe 'Create Viewing Party' do
 
       click_button 'Create Party'
 
-      expect(current_path).to eq(user_dashboard_path(user1))
+      expect(current_path).to eq(dashboard_path)
     end
   end
 end

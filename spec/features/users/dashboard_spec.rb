@@ -7,80 +7,105 @@ RSpec.describe 'the user dashboard' do
   let!(:user3) { users.third }
   let!(:user4) { users.last }
 
-  it 'links to the user dashboard' do
-    visit root_path
+  describe 'dashboard stuff' do
 
-    click_link("#{user1.email}'s Dashboard")
+    before :each do
+      visit login_path
 
-    expect(current_path).to eq(user_dashboard_path(user1))
-  end
+      fill_in 'Enter Email', with: user1.email
+      fill_in 'Enter Password', with: user1.password
+      click_on 'Login'
+    end
 
-  it 'displays username at the top of the page' do
-    visit user_dashboard_path(user1)
+    it 'displays username at the top of the page' do
+      visit dashboard_path
 
-    expect(page).to have_content("#{user1.name}'s Dashboard")
-  end
+      expect(page).to have_content("#{user1.name}'s Dashboard")
+    end
 
-  it 'has a button to discover movies' do
-    visit user_dashboard_path(user1)
+    it 'has a button to discover movies' do
+      visit dashboard_path
 
-    expect(page).to have_button('Discover Movies')
-  end
+      expect(page).to have_button('Discover Movies')
+    end
 
-  it 'has a section tha lists viewing parties' do
-    visit user_dashboard_path(user1)
+    it 'has a section tha lists viewing parties' do
+      visit dashboard_path
 
-    expect(page).to have_content('Viewing Parties')
-  end
+      expect(page).to have_content('Viewing Parties')
+    end
 
-  it 'viewing party postings', :vcr do
-    visit user_movie_viewing_party_new_path(user1, 238)
+    describe 'Post a viewing party' do
+      it 'viewing party postings', :vcr do
+        visit movie_viewing_party_new_path(238)
 
-    fill_in 'Day', with: Date.tomorrow
-    fill_in 'Start Time', with: Time.now + 600
+        fill_in 'Day', with: Date.tomorrow
+        fill_in 'Start Time', with: Time.now + 600
 
-    check("attendees_#{user2.id}")
-    check("attendees_#{user3.id}")
+        check("attendees_#{user2.id}")
+        check("attendees_#{user3.id}")
 
-    click_button 'Create Party'
+        click_button 'Create Party'
 
-    expect(page).to have_link('The Godfather')
-    expect(page).to have_content(Date.tomorrow.strftime('%B %e, %Y') )
-    expect(page).to have_content('Hosting')
-    expect(page).to have_content("Hosted By: #{user1.name}")
-    expect(page).to have_content("Attendees: #{user2.name} #{user3.name}")
-    expect(page).to_not have_content(user4.name)
+        expect(page).to have_link('The Godfather')
+        expect(page).to have_content(Date.tomorrow.strftime('%B %e, %Y') )
+        expect(page).to have_content('Hosting')
+        expect(page).to have_content("Hosted By: #{user1.name}")
+        expect(page).to have_content("Attendees: #{user2.name} #{user3.name}")
+        expect(page).to_not have_content(user4.name)
 
-    visit user_dashboard_path(user2)
+        visit dashboard_path
 
-    expect(page).to have_link('The Godfather')
-    expect(page).to have_content(Date.tomorrow.strftime('%B %e, %Y') )
-    expect(page).to have_content('Invited')
+        expect(page).to have_link('The Godfather')
+        expect(page).to have_content(Date.tomorrow.strftime('%B %e, %Y') )
+        expect(page).to have_content('Attendees')
 
-    visit user_movie_viewing_party_new_path(user2, 553512)
+        visit root_path
 
-    fill_in 'Day', with: Date.tomorrow
-    fill_in 'Start Time', with: Time.now + 600
+        click_on 'Log Out'
 
-    check("attendees_#{user1.id}")
-    check("attendees_#{user3.id}")
+        click_on 'Login'
 
-    click_button 'Create Party'
+        fill_in 'Enter Email', with: user2.email
+        fill_in 'Enter Password', with: user2.password
 
-    expect(page).to have_link('Burn the Stage: The Movie')
-    expect(page).to have_content(Date.tomorrow.strftime('%B %e, %Y') )
-    expect('Burn the Stage: The Movie').to appear_before('The Godfather')
-    expect(page).to have_content("Hosted By: #{user2.name}")
-    expect(page).to have_content("Attendees: #{user1.name} #{user3.name}")
-    expect(page).to_not have_content(user4.name)
+        click_on 'Login'
 
-    visit user_dashboard_path(user4)
+        visit movie_viewing_party_new_path(553512)
 
-    expect(page).to_not have_link('Burn the Stage: The Movie')
-    expect(page).to_not have_link('The Godfather')
-    expect(page).to_not have_content('Invited')
-    expect(page).to_not have_content('Hosting')
-    expect(page).to_not have_content('Hosted By: ')
-    expect(page).to_not have_content('Attendees: ')
+        fill_in 'Day', with: Date.tomorrow
+        fill_in 'Start Time', with: Time.now + 600
+
+        check("attendees_#{user1.id}")
+        check("attendees_#{user3.id}")
+
+        click_button 'Create Party'
+
+        expect(page).to have_link('Burn the Stage: The Movie')
+        expect(page).to have_content(Date.tomorrow.strftime('%B %e, %Y') )
+        expect('Burn the Stage: The Movie').to appear_before('The Godfather')
+        expect(page).to have_content("Hosted By: #{user2.name}")
+        expect(page).to have_content("Attendees: #{user1.name} #{user3.name}")
+        expect(page).to_not have_content(user4.name)
+
+        click_on 'Home'
+
+        click_on 'Log Out'
+
+        click_on 'Login'
+
+        fill_in 'Enter Email', with: user4.email
+        fill_in 'Enter Password', with: user4.password
+
+        click_on 'Login'
+
+        expect(page).to_not have_link('Burn the Stage: The Movie')
+        expect(page).to_not have_link('The Godfather')
+        expect(page).to_not have_content('Invited')
+        expect(page).to_not have_content('Hosting')
+        expect(page).to_not have_content('Hosted By: ')
+        expect(page).to_not have_content('Attendees: ')
+      end
+    end
   end
 end
